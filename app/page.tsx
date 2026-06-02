@@ -320,10 +320,13 @@ export default async function Home() {
             {Object.entries(displayGroups).map(([group, teamsInGroup]) => (
               <div key={group} className="club-card transition-transform hover:-translate-y-1">
                 <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-                  <span className="shield-chip flex h-9 w-9 items-center justify-center rounded-md font-display text-base text-white ring-1 ring-black/10">
+                  <span
+                    className="shield-chip flex h-10 w-10 items-center justify-center rounded-md font-display text-lg text-white ring-1 ring-black/20"
+                    style={{ textShadow: '0 1px 3px rgba(0,0,0,0.65)' }}
+                  >
                     {group}
                   </span>
-                  <span className="font-display text-lg tracking-wide text-foreground">
+                  <span className="font-display text-xl tracking-wide text-sm-ink">
                     Grupo {group}
                   </span>
                 </div>

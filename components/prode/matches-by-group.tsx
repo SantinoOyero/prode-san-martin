@@ -47,11 +47,14 @@ export function MatchesByGroup({ matches, predictions, onPredictionSaved }: Matc
     <div className="space-y-8">
       {sortedGroups.map((group) => (
         <div key={group}>
-          <h3 className="mb-4 flex items-center gap-2.5 text-xl font-bold text-foreground">
-            <span className="shield-chip flex h-9 w-9 items-center justify-center rounded-md font-display text-base text-white ring-1 ring-black/10">
+          <h3 className="mb-4 flex items-center gap-3 text-2xl font-bold text-sm-ink">
+            <span
+              className="shield-chip flex h-11 w-11 items-center justify-center rounded-md font-display text-xl text-white ring-1 ring-black/20"
+              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.65)' }}
+            >
               {group}
             </span>
-            <span className="font-display tracking-wide">Grupo {group}</span>
+            <span className="font-display tracking-wide text-sm-ink">Grupo {group}</span>
           </h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {groupedMatches[group].map((match) => (

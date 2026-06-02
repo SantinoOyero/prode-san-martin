@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -36,6 +36,10 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [now, setNow] = useState<number | null>(null)
+  // Recuerda el ultimo resultado guardado, para no guardar de mas y para el autoguardado.
+  const lastSavedRef = useRef<string>(
+    prediction ? `${prediction.home_score}-${prediction.away_score}` : ''
+  )
   const supabase = createClient()
 
   // Se calcula la hora actual solo en el cliente (despues del montaje) para
@@ -88,6 +92,7 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
     )
 
     if (!error) {
+      lastSavedRef.current = `${parseInt(homeScore)}-${parseInt(awayScore)}`
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
       onPredictionSaved()
@@ -95,6 +100,21 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
 
     setSaving(false)
   }
+
+  // Autoguardado: si completaste los dos casilleros y no le diste a "Guardar",
+  // a los ~2 segundos se guarda solo. Despues lo podes cambiar y se vuelve a
+  // guardar. Asi nadie pierde su pronostico por olvidarse de apretar el boton.
+  useEffect(() => {
+    if (!canPredict) return
+    if (homeScore === '' || awayScore === '') return
+    const combo = `${parseInt(homeScore)}-${parseInt(awayScore)}`
+    if (combo === lastSavedRef.current) return
+    const t = setTimeout(() => {
+      handleSavePrediction()
+    }, 2000)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [homeScore, awayScore, canPredict])
 
   const formatMatchDate = (dateString: string | null) => {
     if (!dateString) return 'Fecha por definir'
@@ -197,7 +217,7 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
                 </div>
               )}
             </div>
-            <span className="text-center text-sm font-medium text-foreground">
+            <span className="flex min-h-[2.6em] items-center justify-center text-center text-sm font-medium leading-tight text-foreground">
               {match.home_team.name}
             </span>
           </div>
@@ -256,7 +276,7 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
                 </div>
               )}
             </div>
-            <span className="text-center text-sm font-medium text-foreground">
+            <span className="flex min-h-[2.6em] items-center justify-center text-center text-sm font-medium leading-tight text-foreground">
               {match.away_team.name}
             </span>
           </div>

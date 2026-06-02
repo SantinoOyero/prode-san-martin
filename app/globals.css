@@ -1,0 +1,225 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* ===== Colores reales del escudo Club San Martin ===== */
+  --sm-green: #0f7a30;
+  --sm-green-dark: #0a5a22;
+  --sm-green-deep: #073d17;
+  --sm-blue: #00378a;
+  --sm-blue-dark: #002766;
+  --sm-blue-deep: #001a47;
+  --sm-gold: #e7b53f;
+  --sm-gold-bright: #f4c95a;
+  --sm-gold-deep: #b9892a;
+  --sm-cream: #faf8f1;
+  --sm-ink: #0c1f15;
+
+  /* ===== Tokens semanticos (shadcn) mapeados al club ===== */
+  --background: #faf8f1;
+  --foreground: #0c1f15;
+  --card: #ffffff;
+  --card-foreground: #0c1f15;
+  --popover: #ffffff;
+  --popover-foreground: #0c1f15;
+  --primary: #0f7a30;
+  --primary-foreground: #ffffff;
+  --secondary: #00378a;
+  --secondary-foreground: #ffffff;
+  --muted: #eef2ec;
+  --muted-foreground: #5a6b5f;
+  --accent: #e7b53f;
+  --accent-foreground: #0c1f15;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #ffffff;
+  --border: #e2e6dd;
+  --input: #e2e6dd;
+  --ring: #0f7a30;
+  --chart-1: #0f7a30;
+  --chart-2: #00378a;
+  --chart-3: #e7b53f;
+  --chart-4: #0a5a22;
+  --chart-5: #002766;
+  --radius: 0.5rem;
+  --sidebar: #073d17;
+  --sidebar-foreground: #faf8f1;
+  --sidebar-primary: #e7b53f;
+  --sidebar-primary-foreground: #0c1f15;
+  --sidebar-accent: #0a5a22;
+  --sidebar-accent-foreground: #faf8f1;
+  --sidebar-border: #0a5a22;
+  --sidebar-ring: #e7b53f;
+}
+
+.dark {
+  --background: #08130c;
+  --foreground: #f4f6f1;
+  --card: #0d1f14;
+  --card-foreground: #f4f6f1;
+  --popover: #0d1f14;
+  --popover-foreground: #f4f6f1;
+  --primary: #2fa055;
+  --primary-foreground: #04130a;
+  --secondary: #2f63c4;
+  --secondary-foreground: #04130a;
+  --muted: #14271a;
+  --muted-foreground: #9db0a3;
+  --accent: #e7b53f;
+  --accent-foreground: #08130c;
+  --destructive: oklch(0.5 0.2 25);
+  --destructive-foreground: #f4f6f1;
+  --border: #1c3322;
+  --input: #14271a;
+  --ring: #2fa055;
+  --sidebar: #04130a;
+  --sidebar-foreground: #f4f6f1;
+  --sidebar-primary: #e7b53f;
+  --sidebar-primary-foreground: #08130c;
+  --sidebar-accent: #14271a;
+  --sidebar-accent-foreground: #f4f6f1;
+  --sidebar-border: #1c3322;
+  --sidebar-ring: #2fa055;
+}
+
+@theme inline {
+  --font-display: var(--font-anton), 'Arial Narrow', sans-serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-archivo), monospace;
+
+  --color-sm-green: var(--sm-green);
+  --color-sm-green-dark: var(--sm-green-dark);
+  --color-sm-green-deep: var(--sm-green-deep);
+  --color-sm-blue: var(--sm-blue);
+  --color-sm-blue-dark: var(--sm-blue-dark);
+  --color-sm-blue-deep: var(--sm-blue-deep);
+  --color-sm-gold: var(--sm-gold);
+  --color-sm-gold-bright: var(--sm-gold-bright);
+  --color-sm-gold-deep: var(--sm-gold-deep);
+  --color-sm-cream: var(--sm-cream);
+  --color-sm-ink: var(--sm-ink);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'ss01', 'cv01';
+  }
+}
+
+@layer components {
+  /* Titulos tipo poster / camiseta */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  /* Fondo heraldico: degrade verde -> azul profundo del escudo */
+  .hero-heraldic {
+    background:
+      radial-gradient(1200px 500px at 50% -10%, rgba(231, 181, 63, 0.18), transparent 60%),
+      linear-gradient(120deg, var(--sm-green-deep) 0%, var(--sm-green-dark) 38%, var(--sm-blue-dark) 62%, var(--sm-blue-deep) 100%);
+  }
+
+  /* Textura de franjas diagonales sutiles (cancha / camiseta) */
+  .stripe-texture {
+    background-image: repeating-linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 2px,
+      transparent 2px,
+      transparent 22px
+    );
+  }
+
+  /* Franja central blanca + dorada del escudo, como divisor */
+  .gold-rule {
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--sm-gold) 20%,
+      var(--sm-gold-bright) 50%,
+      var(--sm-gold) 80%,
+      transparent
+    );
+  }
+
+  /* Chip diagonal verde/azul que evoca el escudo */
+  .shield-chip {
+    background: linear-gradient(118deg, var(--sm-green) 0%, var(--sm-green) 46%, #fff 46%, #fff 54%, var(--sm-blue) 54%, var(--sm-blue) 100%);
+  }
+
+  /* Tarjeta con sello del club: filo dorado arriba */
+  .club-card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .club-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--sm-green), var(--sm-gold) 50%, var(--sm-blue));
+    opacity: 0.9;
+  }
+
+  /* Borde dorado fino reutilizable */
+  .ring-gold {
+    box-shadow: 0 0 0 1px var(--sm-gold), 0 8px 30px -12px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Aparicion escalonada para el load de la landing */
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .rise-in {
+    animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}

@@ -40,13 +40,13 @@ export function PagoGate({ nombre }: PagoGateProps) {
     <div className="mx-auto max-w-xl">
       <Card className="club-card overflow-hidden">
         {/* Encabezado del club, compacto (igual que el footer del sitio) */}
-        <div className="hero-heraldic stripe-texture px-6 py-5 text-center">
+        <div className="bg-sm-green-deep px-6 py-5 text-center">
           <Image
             src="/images/club-san-martin-logo.png"
             alt="Club San Martín"
-            width={48}
-            height={48}
-            className="mx-auto h-12 w-12 object-contain drop-shadow"
+            width={44}
+            height={44}
+            className="mx-auto h-11 w-11 object-contain drop-shadow"
             unoptimized
           />
           <p className="mt-2 font-display text-base tracking-wide text-sm-gold">Club San Martín</p>

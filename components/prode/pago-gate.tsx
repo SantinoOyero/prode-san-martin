@@ -17,10 +17,20 @@ export function PagoGate({ nombre }: PagoGateProps) {
 
   const handlePagar = async () => {
     setLoading(true)
-    // En el Paso 3 esto va a llamar a nuestra API que crea el pago en
-    // Mercado Pago y redirige al checkout. Por ahora es un placeholder.
-    alert('El pago con Mercado Pago se conecta en el proximo paso 👍')
-    setLoading(false)
+    try {
+      const res = await fetch('/api/crear-pago', { method: 'POST' })
+      const data = await res.json()
+      if (data.init_point) {
+        // Redirige al checkout de Mercado Pago (QR o tarjeta).
+        window.location.href = data.init_point
+      } else {
+        alert(data.error || 'No se pudo generar el pago. Intentá de nuevo.')
+        setLoading(false)
+      }
+    } catch {
+      alert('Hubo un problema al generar el pago. Intentá de nuevo.')
+      setLoading(false)
+    }
   }
 
   const montoTexto = MONTO_ARS.toLocaleString('es-AR')

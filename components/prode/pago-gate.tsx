@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Loader2, Lock, Trophy, Target, ShieldCheck } from 'lucide-react'
+import { Loader2, Trophy, Target, ShieldCheck } from 'lucide-react'
 
 // Monto de la inscripcion (en pesos). Si algun dia cambia, se toca aca.
 const MONTO_ARS = 10000
@@ -38,20 +39,34 @@ export function PagoGate({ nombre }: PagoGateProps) {
   return (
     <div className="mx-auto max-w-xl">
       <Card className="club-card overflow-hidden">
-        {/* Franja superior con el escudo del club */}
-        <div className="hero-heraldic stripe-texture px-6 py-8 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/30">
-            <Lock className="h-7 w-7 text-white" />
-          </div>
-          <h2 className="font-display text-2xl tracking-wide text-white sm:text-3xl">
-            Pagá para jugar
-          </h2>
-          <p className="mt-1 text-sm text-white/80">
-            {nombre ? `Hola ${nombre}, ` : ''}activá tu lugar en el prode del club
+        {/* Encabezado del club, compacto (igual que el footer del sitio) */}
+        <div className="hero-heraldic stripe-texture px-6 py-5 text-center">
+          <Image
+            src="/images/club-san-martin-logo.png"
+            alt="Club San Martín"
+            width={48}
+            height={48}
+            className="mx-auto h-12 w-12 object-contain drop-shadow"
+            unoptimized
+          />
+          <p className="mt-2 font-display text-base tracking-wide text-sm-gold">Club San Martín</p>
+          <p className="text-xs text-white/75">Prode Mundial 2026</p>
+          <p className="mx-auto mt-1.5 max-w-xs text-[11px] leading-snug text-white/60">
+            Todos los fondos recaudados nos ayudan a irnos de gira a Sudáfrica.
           </p>
         </div>
 
         <CardContent className="p-6">
+          {/* Titulo de la accion */}
+          <div className="mb-5 text-center">
+            <h2 className="font-display text-2xl tracking-wide text-sm-ink">Pagá para jugar</h2>
+            {nombre && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                Hola {nombre}, activá tu lugar en el prode.
+              </p>
+            )}
+          </div>
+
           {/* Monto */}
           <div className="mb-6 text-center">
             <p className="text-xs font-bold uppercase tracking-widest text-sm-gold-deep">

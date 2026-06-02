@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/prode/header'
 import { ProdeContent } from './prode-content'
+import { PagoGate } from '@/components/prode/pago-gate'
 
 export default async function ProdePage() {
   const supabase = await createClient()
@@ -38,6 +39,22 @@ export default async function ProdePage() {
     .select('*')
     .eq('id', user.id)
     .single()
+
+  // Si el usuario todavia no pago (y no es admin), mostramos la pantalla de
+  // pago en lugar del prode. Los admin entran siempre, asi nunca se bloquean.
+  const yaPago = profile?.pago_hecho === true
+  const esAdmin = profile?.is_admin === true
+
+  if (!yaPago && !esAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-7xl px-4 py-12">
+          <PagoGate nombre={profile?.full_name} />
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">

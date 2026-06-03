@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 // Monto de la inscripcion (en pesos). Si cambia, se toca aca.
-const MONTO = 10000
+const MONTO = 15000
 
 // URL publica del sitio (para las vueltas de Mercado Pago y el webhook).
 const SITE_URL =

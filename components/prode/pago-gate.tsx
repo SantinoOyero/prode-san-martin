@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2, Trophy, Target, ShieldCheck } from 'lucide-react'
 
 // Monto de la inscripcion (en pesos). Si algun dia cambia, se toca aca.
-const MONTO_ARS = 10000
+const MONTO_ARS = 15000
 
 interface PagoGateProps {
   nombre?: string | null

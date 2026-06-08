@@ -1,6 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Cuánto tiempo se mantiene la sesión iniciada (cookie persistente).
+// 30 días: el usuario no tiene que volver a loguearse cada vez que abre la app.
+const SESSION_MAX_AGE = 60 * 60 * 24 * 30
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -24,7 +28,13 @@ export async function updateSession(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              // Cookie persistente solo cuando hay sesión (value no vacío).
+              // En el logout (value vacío) respetamos las opciones originales
+              // para que la cookie se borre bien.
+              ...(value ? { maxAge: SESSION_MAX_AGE } : {}),
+            }),
           )
         },
       },

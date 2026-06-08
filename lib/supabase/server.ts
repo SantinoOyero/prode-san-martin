@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+// Mantener la sesión iniciada 30 días (cookie persistente).
+const SESSION_MAX_AGE = 60 * 60 * 24 * 30
+
 /**
  * Especially important if using Fluid compute: Don't put this client in a
  * global variable. Always create a new client within each function when using
@@ -20,7 +23,10 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
+              cookieStore.set(name, value, {
+                ...options,
+                ...(value ? { maxAge: SESSION_MAX_AGE } : {}),
+              }),
             )
           } catch {
             // The "setAll" method was called from a Server Component.

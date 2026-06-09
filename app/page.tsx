@@ -240,7 +240,7 @@ export default async function Home() {
                 n: '1',
                 bg: 'bg-sm-green',
                 title: 'Registrate',
-                text: 'Creá tu cuenta con tu email, pagá la inscripción de 15000 pesos y entrás al prode oficial del club.',
+                text: 'Creá tu cuenta con tu email, pagá la inscripción de $15.000 y entrás al prode oficial del club.',
               },
               {
                 n: '2',

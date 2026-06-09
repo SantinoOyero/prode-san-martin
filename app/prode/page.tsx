@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/prode/header'
+import { InstallBanner } from '@/components/install-banner'
 import { ProdeContent } from './prode-content'
 import { PagoGate } from '@/components/prode/pago-gate'
 
@@ -98,26 +99,30 @@ export default async function ProdePage({
   let yaPago = profile?.pago_hecho === true
   const esAdmin = profile?.is_admin === true
 
+  // Leemos los parametros de la vuelta de Mercado Pago una sola vez.
+  const sp = await searchParams
+  const rawId = sp?.payment_id ?? sp?.collection_id
+  const paymentId = Array.isArray(rawId) ? rawId[0] : rawId
+  const rawPago = sp?.pago
+  const pagoParam = Array.isArray(rawPago) ? rawPago[0] : rawPago
+
   // Respaldo del webhook: si la persona vuelve de Mercado Pago con un pago,
   // lo verificamos en el momento y la habilitamos sin esperar el aviso.
-  if (!yaPago && !esAdmin) {
-    const sp = await searchParams
-    const rawId = sp?.payment_id ?? sp?.collection_id
-    const paymentId = Array.isArray(rawId) ? rawId[0] : rawId
-    if (paymentId) {
-      const habilitado = await verificarYHabilitarPago(paymentId, user.id)
-      if (habilitado) yaPago = true
-    }
+  if (!yaPago && !esAdmin && paymentId) {
+    const habilitado = await verificarYHabilitarPago(paymentId, user.id)
+    if (habilitado) yaPago = true
   }
 
   // Si todavia no pago (y no es admin), mostramos la pantalla de pago.
   // Los admin entran siempre, asi nunca se bloquean.
   if (!yaPago && !esAdmin) {
+    const estadoPago =
+      pagoParam === 'error' ? 'error' : pagoParam === 'pendiente' ? 'pendiente' : null
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <main className="mx-auto max-w-7xl px-4 py-12">
-          <PagoGate nombre={profile?.full_name} />
+          <PagoGate nombre={profile?.full_name} estadoPago={estadoPago} />
         </main>
       </div>
     )
@@ -127,6 +132,7 @@ export default async function ProdePage({
     <div className="min-h-screen bg-background">
       <Header />
       <main className="mx-auto max-w-7xl px-4 py-8">
+        <InstallBanner />
         <div className="mb-8">
           <h1 className="font-display text-4xl tracking-wide text-foreground">Mis Predicciones</h1>
           <p className="mt-2 text-muted-foreground">

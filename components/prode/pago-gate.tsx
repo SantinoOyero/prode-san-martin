@@ -4,16 +4,18 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Loader2, Trophy, Target, ShieldCheck } from 'lucide-react'
+import { Loader2, Trophy, Target, ShieldCheck, AlertTriangle } from 'lucide-react'
 
 // Monto de la inscripcion (en pesos). Si algun dia cambia, se toca aca.
 const MONTO_ARS = 15000
 
 interface PagoGateProps {
   nombre?: string | null
+  // 'error' = MP rechazo el pago | 'pendiente' = quedo pendiente | null = entrada normal
+  estadoPago?: 'error' | 'pendiente' | null
 }
 
-export function PagoGate({ nombre }: PagoGateProps) {
+export function PagoGate({ nombre, estadoPago }: PagoGateProps) {
   const [loading, setLoading] = useState(false)
 
   const handlePagar = async () => {
@@ -57,6 +59,42 @@ export function PagoGate({ nombre }: PagoGateProps) {
         </div>
 
         <CardContent className="p-6">
+          {/* Aviso cuando MP rechazo el pago o quedo pendiente */}
+          {estadoPago === 'error' && (
+            <div className="mb-5 rounded-xl border border-red-300 bg-red-50 p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                <div className="text-sm text-red-800">
+                  <p className="font-bold">Tu pago no se pudo procesar 😕</p>
+                  <p className="mt-1 text-red-700">
+                    Mercado Pago rechazó la operación por seguridad (no es un problema del prode).
+                  </p>
+                  <p className="mt-2 font-semibold">¿Qué podés hacer?</p>
+                  <ul className="mt-1 list-disc space-y-0.5 pl-5 text-red-700">
+                    <li>Reintentá el pago.</li>
+                    <li>Si vuelve a fallar, probá con otra tarjeta o medio de pago.</li>
+                    <li>O esperá unos minutos y volvé a intentar.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {estadoPago === 'pendiente' && (
+            <div className="mb-5 rounded-xl border border-amber-300 bg-amber-50 p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                <div className="text-sm text-amber-800">
+                  <p className="font-bold">Tu pago quedó pendiente ⏳</p>
+                  <p className="mt-1 text-amber-700">
+                    Mercado Pago todavía no confirmó la operación. Si ya pagaste, esperá unos
+                    minutos y recargá esta página. Si no, podés volver a intentar.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Titulo de la accion */}
           <div className="mb-5 text-center">
             <h2 className="font-display text-2xl tracking-wide text-sm-ink">Pagá para jugar</h2>

@@ -25,7 +25,6 @@ export function Leaderboard() {
         .select("id, email, full_name, points")
         .eq("pago_hecho", true)
         .order("points", { ascending: false })
-        .limit(20)
 
       if (!error && data) {
         setEntries(data)

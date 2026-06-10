@@ -23,6 +23,7 @@ export function Leaderboard() {
       const { data, error } = await supabase
         .from("profiles")
         .select("id, email, full_name, points")
+        .eq("pago_hecho", true)
         .order("points", { ascending: false })
         .limit(20)
 

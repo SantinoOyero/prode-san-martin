@@ -52,6 +52,20 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
     return () => clearInterval(interval)
   }, [])
 
+  // Sincroniza esta tarjeta cuando la prediccion cambia desde AFUERA, es decir
+  // cuando el mismo partido se edito en otra seccion (ej: "Partidos de hoy" y
+  // su grupo muestran el mismo partido). Si el cambio no vino de esta tarjeta,
+  // re-cargamos los casilleros para que las dos muestren siempre lo mismo.
+  useEffect(() => {
+    const combo = prediction ? `${prediction.home_score}-${prediction.away_score}` : ''
+    if (combo !== lastSavedRef.current) {
+      setHomeScore(prediction?.home_score?.toString() ?? '')
+      setAwayScore(prediction?.away_score?.toString() ?? '')
+      lastSavedRef.current = combo
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prediction])
+
   // El partido cierra 1 hora antes del horario. Calculamos contra "ahora"
   // solo en el cliente (now !== null) para no romper la hydration.
   const matchTime = match.match_date ? new Date(match.match_date).getTime() : null

@@ -246,7 +246,7 @@ export default async function Home() {
                 n: '2',
                 bg: 'bg-sm-blue',
                 title: 'Predecí',
-                text: 'Cargá tu pronóstico de cada partido hasta 1 hora antes de que arranque.',
+                text: 'Cargá tu pronóstico de cada partido hasta 2 minutos antes de que arranque.',
               },
               {
                 n: '3',

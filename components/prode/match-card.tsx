@@ -11,7 +11,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Loader2, Check, Clock, Trophy, Lock } from 'lucide-react'
 
 // El prode cierra esta cantidad de tiempo ANTES del horario del partido.
-const CIERRE_ANTES_MS = 60 * 60 * 1000 // 1 hora
+const CIERRE_ANTES_MS = 2 * 60 * 1000 // 2 minutos
 
 // Devuelve un texto corto tipo "2d 3h" / "5h 20m" / "12m" con lo que falta.
 function formatearFalta(ms: number): string {
@@ -66,7 +66,7 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prediction])
 
-  // El partido cierra 1 hora antes del horario. Calculamos contra "ahora"
+  // El partido cierra 2 minutos antes del horario. Calculamos contra "ahora"
   // solo en el cliente (now !== null) para no romper la hydration.
   const matchTime = match.match_date ? new Date(match.match_date).getTime() : null
   const closeTime = matchTime !== null ? matchTime - CIERRE_ANTES_MS : null
@@ -207,7 +207,7 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
         </p>
         {canPredict && (
           <p className="mb-4 text-center text-xs text-muted-foreground/70">
-            Cierra 1 h antes (hora de Buenos Aires)
+            Cierra 2 min antes (hora de Buenos Aires)
           </p>
         )}
         {!canPredict && <div className="mb-4" />}

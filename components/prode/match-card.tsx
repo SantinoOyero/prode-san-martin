@@ -8,10 +8,27 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import type { MatchWithTeams, Prediction } from '@/lib/types'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2, Check, Clock, Trophy, Lock } from 'lucide-react'
+import {
+  Loader2,
+  Check,
+  Clock,
+  Trophy,
+  Lock,
+  Users,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react'
 
 // El prode cierra esta cantidad de tiempo ANTES del horario del partido.
 const CIERRE_ANTES_MS = 2 * 60 * 1000 // 2 minutos
+
+// Una fila de la lista "Ver pronosticos de todos".
+interface PredItem {
+  nombre: string
+  home_score: number
+  away_score: number
+  points_earned: number | null
+}
 
 // Devuelve un texto corto tipo "2d 3h" / "5h 20m" / "12m" con lo que falta.
 function formatearFalta(ms: number): string {
@@ -36,6 +53,11 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [now, setNow] = useState<number | null>(null)
+  // Estado de "Ver pronosticos de todos".
+  const [showPreds, setShowPreds] = useState(false)
+  const [loadingPreds, setLoadingPreds] = useState(false)
+  const [preds, setPreds] = useState<PredItem[] | null>(null)
+  const [predsError, setPredsError] = useState<string | null>(null)
   // Recuerda el ultimo resultado guardado, para no guardar de mas y para el autoguardado.
   const lastSavedRef = useRef<string>(
     prediction ? `${prediction.home_score}-${prediction.away_score}` : ''
@@ -129,6 +151,33 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [homeScore, awayScore, canPredict])
+
+  // Trae (una sola vez) los pronosticos de todos para este partido. El servidor
+  // verifica que el partido haya cerrado antes de devolver nada.
+  const verPronosticos = async () => {
+    if (showPreds) {
+      setShowPreds(false)
+      return
+    }
+    setShowPreds(true)
+    if (preds === null && !loadingPreds) {
+      setLoadingPreds(true)
+      setPredsError(null)
+      try {
+        const res = await fetch(`/api/predicciones-partido?match_id=${match.id}`)
+        const data = await res.json()
+        if (res.ok) {
+          setPreds(data.predicciones ?? [])
+        } else {
+          setPredsError(data.error ?? 'No se pudieron cargar los pronosticos')
+        }
+      } catch {
+        setPredsError('No se pudieron cargar los pronosticos')
+      } finally {
+        setLoadingPreds(false)
+      }
+    }
+  }
 
   const formatMatchDate = (dateString: string | null) => {
     if (!dateString) return 'Fecha por definir'
@@ -329,6 +378,72 @@ export function MatchCard({ match, prediction, onPredictionSaved }: MatchCardPro
               'Guardar Prediccion'
             )}
           </Button>
+        )}
+
+        {/* Ver pronosticos de todos (solo cuando el partido cerro) */}
+        {!canPredict && (
+          <div className="mt-4 border-t border-border pt-3">
+            <Button
+              onClick={verPronosticos}
+              variant="ghost"
+              size="sm"
+              className="w-full text-sm-green hover:text-sm-green"
+            >
+              <Users className="mr-2 h-4 w-4" />
+              {showPreds ? 'Ocultar pronosticos' : 'Ver pronosticos de todos'}
+              {showPreds ? (
+                <ChevronUp className="ml-2 h-4 w-4" />
+              ) : (
+                <ChevronDown className="ml-2 h-4 w-4" />
+              )}
+            </Button>
+
+            {showPreds && (
+              <div className="mt-3">
+                {loadingPreds ? (
+                  <div className="flex items-center justify-center py-4 text-sm text-muted-foreground">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Cargando...
+                  </div>
+                ) : predsError ? (
+                  <p className="py-3 text-center text-sm text-muted-foreground">{predsError}</p>
+                ) : preds && preds.length > 0 ? (
+                  <div className="max-h-64 space-y-1 overflow-y-auto pr-1">
+                    {preds.map((p, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-3 py-1.5"
+                      >
+                        <span className="truncate text-sm text-foreground">{p.nombre}</span>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className="text-sm font-semibold text-foreground">
+                            {p.home_score} - {p.away_score}
+                          </span>
+                          {match.is_finished && p.points_earned !== null && (
+                            <Badge
+                              className={
+                                p.points_earned === 10
+                                  ? 'bg-sm-gold text-sm-ink'
+                                  : p.points_earned > 0
+                                    ? 'bg-sm-blue text-white'
+                                    : 'bg-muted text-muted-foreground'
+                              }
+                            >
+                              {p.points_earned}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="py-3 text-center text-sm text-muted-foreground">
+                    Nadie pronostico este partido.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>

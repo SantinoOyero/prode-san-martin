@@ -115,7 +115,8 @@ export function Leaderboard() {
         </CardTitle>
         <p className="mt-1 text-xs text-muted-foreground">
           En caso de empate en puntos, queda mas arriba el que tenga mayor cantidad de
-          plenos (resultados exactos).
+          plenos (resultados exactos). 
+          En caso de seguir empatados, se definira por orden de anotacion.
         </p>
       </CardHeader>
       <CardContent className="p-4">

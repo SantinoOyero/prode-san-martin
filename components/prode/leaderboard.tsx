@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Trophy, Medal, Award, Crown } from "lucide-react"
 import Image from "next/image"
@@ -11,29 +10,31 @@ interface LeaderboardEntry {
   email: string
   full_name: string | null
   points: number
+  plenos: number
 }
 
 export function Leaderboard() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
 
   useEffect(() => {
     async function fetchLeaderboard() {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, email, full_name, points")
-        .eq("pago_hecho", true)
-        .order("points", { ascending: false })
-
-      if (!error && data) {
-        setEntries(data)
+      try {
+        // Va por la API porque los plenos de los demas no se pueden contar
+        // desde el navegador (RLS). Ya viene ordenado: puntos y luego plenos.
+        const res = await fetch("/api/ranking")
+        if (res.ok) {
+          const json = await res.json()
+          setEntries(json.entries ?? [])
+        }
+      } catch {
+        // Si falla, queda la tabla vacia con su mensaje.
       }
       setLoading(false)
     }
 
     fetchLeaderboard()
-  }, [supabase])
+  }, [])
 
   const getRankIcon = (position: number) => {
     switch (position) {
@@ -112,6 +113,10 @@ export function Leaderboard() {
           <Trophy className="h-5 w-5" />
           Tabla de Posiciones
         </CardTitle>
+        <p className="mt-1 text-xs text-muted-foreground">
+          En caso de empate en puntos, queda mas arriba el que tenga mayor cantidad de
+          plenos (resultados exactos).
+        </p>
       </CardHeader>
       <CardContent className="p-4">
         <div className="space-y-2">
@@ -130,11 +135,22 @@ export function Leaderboard() {
                 </p>
               </div>
 
-              <div className="flex flex-col items-end">
-                <span className={`text-xl font-bold ${index === 0 ? "text-yellow-600 dark:text-yellow-400" : "text-primary"}`}>
-                  {entry.points}
-                </span>
-                <span className="text-xs text-muted-foreground">puntos</span>
+              <div className="flex items-center gap-3 sm:gap-5">
+                <div className="flex flex-col items-end">
+                  <span className={`text-xl font-bold ${index === 0 ? "text-yellow-600 dark:text-yellow-400" : "text-primary"}`}>
+                    {entry.points}
+                  </span>
+                  <span className="text-xs text-muted-foreground">puntos</span>
+                </div>
+
+                <div className="flex w-12 flex-col items-center border-l border-border/60 pl-3 sm:pl-4">
+                  <span className="text-lg font-bold text-foreground/80">
+                    {entry.plenos}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {entry.plenos === 1 ? "pleno" : "plenos"}
+                  </span>
+                </div>
               </div>
             </div>
           ))}
